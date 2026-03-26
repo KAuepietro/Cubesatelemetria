@@ -1,177 +1,48 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recepção de Telemetria - TCC</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        /* Reset básico */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<script>
+    const form = document.getElementById('telemetry-form');
+    const list = document.getElementById('telemetry-list');
 
-        body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #e0f7fa, #ffffff);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+    // Carregar dados salvos ao abrir a página
+    function loadTelemetry() {
+        const data = JSON.parse(localStorage.getItem('telemetry')) || [];
+        list.innerHTML = '';
 
-        header {
-            background-color: #00796b;
-            color: #fff;
-            text-align: center;
-            padding: 2rem 1rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        header h1 {
-            font-size: 2rem;
-        }
-
-        main {
-            flex: 1;
-            padding: 2rem 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        /* Formulário */
-        form {
-            background-color: #ffffff;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
-            transition: transform 0.2s;
-        }
-
-        form:hover {
-            transform: translateY(-3px);
-        }
-
-        form h2 {
-            margin-bottom: 1rem;
-            color: #00796b;
-            text-align: center;
-        }
-
-        input, button {
-            width: 100%;
-            padding: 0.8rem;
-            margin: 0.6rem 0;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 1rem;
-        }
-
-        input:focus {
-            border-color: #00796b;
-            outline: none;
-        }
-
-        button {
-            background-color: #00796b;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-
-        button:hover {
-            background-color: #004d40;
-        }
-
-        /* Lista de telemetria */
-        #telemetry-display {
-            background-color: #ffffff;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.05);
-            width: 100%;
-            max-width: 600px;
-        }
-
-        #telemetry-display h2 {
-            margin-bottom: 1rem;
-            color: #00796b;
-            text-align: center;
-        }
-
-        #telemetry-list {
-            list-style: none;
-            max-height: 300px;
-            overflow-y: auto;
-            padding-right: 0.5rem;
-        }
-
-        #telemetry-list li {
-            padding: 0.7rem;
-            margin-bottom: 0.5rem;
-            background-color: #e0f2f1;
-            border-radius: 8px;
-            font-size: 0.95rem;
-        }
-
-        /* Scrollbar estilizado */
-        #telemetry-list::-webkit-scrollbar {
-            width: 8px;
-        }
-        #telemetry-list::-webkit-scrollbar-thumb {
-            background-color: #00796b;
-            border-radius: 4px;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Recepção de Telemetria - TCC</h1>
-    </header>
-
-    <main>
-        <form id="telemetry-form">
-            <h2>Enviar Telemetria</h2>
-            <input type="text" id="device-id" placeholder="ID do Dispositivo" required>
-            <input type="number" id="temperature" placeholder="Temperatura (°C)" required>
-            <input type="number" id="humidity" placeholder="Umidade (%)" required>
-            <button type="submit">Enviar</button>
-        </form>
-
-        <div id="telemetry-display">
-            <h2>Dados Recebidos</h2>
-            <ul id="telemetry-list">
-                <!-- Telemetria será exibida aqui -->
-            </ul>
-        </div>
-    </main>
-
-    <script>
-        const form = document.getElementById('telemetry-form');
-        const list = document.getElementById('telemetry-list');
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const deviceId = document.getElementById('device-id').value;
-            const temperature = document.getElementById('temperature').value;
-            const humidity = document.getElementById('humidity').value;
-
-            // Simulação de recepção de telemetria
-            const listItem = document.createElement('li');
-            const timestamp = new Date().toLocaleString();
-            listItem.textContent = `[${timestamp}] Dispositivo: ${deviceId} | Temperatura: ${temperature}°C | Umidade: ${humidity}%`;
-            list.appendChild(listItem);
-
-            form.reset();
+        data.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            list.appendChild(li);
         });
-    </script>
-</body>
-</html>
+    }
+
+    // Salvar no LocalStorage
+    function saveTelemetry(entry) {
+        const data = JSON.parse(localStorage.getItem('telemetry')) || [];
+        data.push(entry);
+        localStorage.setItem('telemetry', JSON.stringify(data));
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const deviceId = document.getElementById('device-id').value;
+        const temperature = document.getElementById('temperature').value;
+        const humidity = document.getElementById('humidity').value;
+
+        const timestamp = new Date().toLocaleString();
+
+        const entry = `[${timestamp}] Dispositivo: ${deviceId} | Temperatura: ${temperature}°C | Umidade: ${humidity}%`;
+
+        // Adiciona na tela
+        const listItem = document.createElement('li');
+        listItem.textContent = entry;
+        list.appendChild(listItem);
+
+        // Salva
+        saveTelemetry(entry);
+
+        form.reset();
+    });
+
+    // Carrega ao iniciar
+    loadTelemetry();
+</script>
